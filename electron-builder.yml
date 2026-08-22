@@ -1,0 +1,44 @@
+appId: com.novarename.app
+productName: NovaRename
+executableName: NovaRename
+copyright: Copyright © 2026
+publish: null
+
+directories:
+  output: Release
+  buildResources: build
+
+files:
+  - dist/**/*
+  - dist-electron/**/*
+  - rename.ico
+  - package.json
+
+win:
+  icon: rename.ico
+  executableName: NovaRename
+  target:
+    - target: nsis
+      arch:
+        - x64
+    - target: portable
+      arch:
+        - x64
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: NovaRename
+  artifactName: "${productName}_Setup_${version}.${ext}"
+
+portable:
+  artifactName: "${productName}_Portable_${version}.${ext}"
+  requestExecutionLevel: user
+  unpackDirName: "NovaRename_Portable"
+
+asar: true
+compression: normal

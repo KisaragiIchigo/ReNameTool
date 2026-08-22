@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    border-color: rgba(15, 23, 42, 0.1);
+  }
+
+  body {
+    background-color: #F8FAFC;
+    color: #0F172A;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+/* スクロールバーのカスタマイズ（クリーン・スレート） */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
