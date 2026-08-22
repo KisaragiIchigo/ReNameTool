@@ -12,10 +12,10 @@ echo 1. Staging files...
 git add .
 
 echo 2. Committing changes...
-git commit -m "NovaRename: update"
+git commit -m "NovaRename: update" 2>nul
 
-echo 3. Pushing to GitHub (origin main)...
-git push -u origin main
+echo 3. Pushing to GitHub (origin main --force)...
+git push -u origin main --force
 
 if %errorlevel% neq 0 (
     echo.
