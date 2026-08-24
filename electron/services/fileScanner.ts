@@ -17,10 +17,15 @@ export async function scanPaths(paths: string[], options: ScanOptions): Promise<
       const isDir = stats.isDirectory();
 
       if (isDir) {
+        // サブフォルダであり、「サブフォルダを含む」がOFFの場合はリネーム対象にも追加せず、中身の走査もしない
+        if (!isRootEntry && !options.includeSubfolders) {
+          return;
+        }
+
         // フォルダ自体のリネーム対象への追加
         if (options.targetScope === 'folders' || options.targetScope === 'both') {
-          // ルートディレクトリであり、includeRootFolderがfalseの場合はスキップする
-          const shouldInclude = !(isRootEntry && options.includeRootFolder === false);
+          // ルートディレクトリであり、includeSubfoldersが有効かつincludeRootFolderがfalseの場合はスキップする
+          const shouldInclude = !(isRootEntry && options.includeSubfolders && options.includeRootFolder === false);
           
           if (shouldInclude) {
             const dirName = path.basename(fullPath);

@@ -57,12 +57,14 @@ export const Header: React.FC<Props> = ({
             <input
               type="checkbox"
               checked={scanOptions.includeSubfolders}
-              onChange={(e) =>
+              onChange={(e) => {
+                const checked = e.target.checked;
                 setScanOptions((prev) => ({
                   ...prev,
-                  includeSubfolders: e.target.checked,
-                }))
-              }
+                  includeSubfolders: checked,
+                  includeRootFolder: checked ? prev.includeRootFolder : true,
+                }));
+              }}
               className="rounded border-slate-300 text-accent-primary focus:ring-accent-primary h-3.5 w-3.5"
             />
             <span className="text-xs font-medium">サブフォルダを含む</span>
