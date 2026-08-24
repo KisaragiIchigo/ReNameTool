@@ -1,0 +1,17 @@
+[
+  {
+    "date": "2026-08-24",
+    "files_changed": [
+      "src/types/index.ts",
+      "src/hooks/useFileList.ts",
+      "src/components/preview/PreviewTable.tsx",
+      "src/components/header/Header.tsx",
+      "src/App.tsx",
+      "electron/services/fileScanner.ts"
+    ],
+    "summary": "親フォルダのリネーム選択機能とソート機能の追加",
+    "purpose": "サブフォルダを含むリネーム時に親フォルダを対象から除外できるようにし、ファイル一覧の表示順を名前・サイズ等でソート可能にするため",
+    "impact": "一覧プレビューでのヘッダークリックによるソート機能。対象スコープがフォルダの時のスキャンオプションに「親フォルダも含める」を追加。",
+    "concerns": "ソートによってパイプライン上の順序依存（連番ルールなど）が変わるため、ユーザーは意図した順序でソート後にリネームを実行する必要がある点"
+  }
+]

@@ -11,6 +11,8 @@ import {
   Copy,
   RotateCcw,
   Check,
+  ChevronUp,
+  ChevronDown,
 } from 'lucide-react';
 import { FileItem, PreviewItem, ColumnWidths } from '../../types';
 import { DiffView } from './DiffView';
@@ -27,6 +29,8 @@ interface Props {
   onUpdateFileCustomName: (id: string, newName: string | undefined) => void;
   columnWidths: ColumnWidths;
   setColumnWidths: React.Dispatch<React.SetStateAction<ColumnWidths>>;
+  sortOption: { field: import('../../types').SortField; order: import('../../types').SortOrder };
+  onSort: (field: import('../../types').SortField) => void;
 }
 
 interface ContextMenuState {
@@ -47,6 +51,8 @@ export const PreviewTable: React.FC<Props> = ({
   onUpdateFileCustomName,
   columnWidths,
   setColumnWidths,
+  sortOption,
+  onSort,
 }) => {
   const parentRef = useRef<HTMLDivElement>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -175,6 +181,11 @@ export const PreviewTable: React.FC<Props> = ({
 
   const totalGridTemplate = `40px ${columnWidths.status}px ${columnWidths.original}px ${columnWidths.preview}px ${columnWidths.folder}px ${columnWidths.size}px ${columnWidths.actions}px minmax(0, 1fr)`;
 
+  const SortIndicator = ({ field }: { field: import('../../types').SortField }) => {
+    if (sortOption.field !== field) return null;
+    return sortOption.order === 'asc' ? <ChevronUp className="w-3 h-3 ml-1" /> : <ChevronDown className="w-3 h-3 ml-1" />;
+  };
+
   return (
     <div className="h-full w-full flex flex-col bg-white overflow-hidden relative">
       {/* テーブル上部バー */}
@@ -228,8 +239,14 @@ export const PreviewTable: React.FC<Props> = ({
         </div>
 
         {/* 変更前のファイル名 */}
-        <div className="px-2 relative flex items-center justify-between h-full">
-          <span>変更前のファイル名</span>
+        <div 
+          className="px-2 relative flex items-center justify-between h-full cursor-pointer hover:text-text-primary"
+          onClick={() => onSort('name')}
+        >
+          <div className="flex items-center">
+            <span>変更前のファイル名</span>
+            <SortIndicator field="name" />
+          </div>
           <div
             onMouseDown={(e) => handleResizeStart('original', e)}
             className="w-1.5 h-full cursor-col-resize hover:bg-accent-primary/50 absolute right-0 top-0"
@@ -246,8 +263,14 @@ export const PreviewTable: React.FC<Props> = ({
         </div>
 
         {/* フォルダ */}
-        <div className="px-2 relative flex items-center justify-between h-full">
-          <span>フォルダ</span>
+        <div 
+          className="px-2 relative flex items-center justify-between h-full cursor-pointer hover:text-text-primary"
+          onClick={() => onSort('dir')}
+        >
+          <div className="flex items-center">
+            <span>フォルダ</span>
+            <SortIndicator field="dir" />
+          </div>
           <div
             onMouseDown={(e) => handleResizeStart('folder', e)}
             className="w-1.5 h-full cursor-col-resize hover:bg-accent-primary/50 absolute right-0 top-0"
@@ -255,8 +278,14 @@ export const PreviewTable: React.FC<Props> = ({
         </div>
 
         {/* サイズ */}
-        <div className="px-2 text-right relative flex items-center justify-between h-full">
-          <span>サイズ</span>
+        <div 
+          className="px-2 text-right relative flex items-center justify-between h-full cursor-pointer hover:text-text-primary"
+          onClick={() => onSort('size')}
+        >
+          <div className="flex items-center">
+            <span>サイズ</span>
+            <SortIndicator field="size" />
+          </div>
           <div
             onMouseDown={(e) => handleResizeStart('size', e)}
             className="w-1.5 h-full cursor-col-resize hover:bg-accent-primary/50 absolute right-0 top-0"

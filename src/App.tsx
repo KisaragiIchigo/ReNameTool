@@ -33,6 +33,8 @@ export const App: React.FC = () => {
     clearFiles,
     updateFileCustomName,
     updateFilesAfterRename,
+    sortOption,
+    handleSort,
   } = useFileList();
 
   const {
@@ -363,6 +365,8 @@ export const App: React.FC = () => {
               onUpdateFileCustomName={updateFileCustomName}
               columnWidths={columnWidths}
               setColumnWidths={setColumnWidths}
+              sortOption={sortOption}
+              onSort={handleSort}
             />
           )}
 

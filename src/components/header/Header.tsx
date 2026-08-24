@@ -68,6 +68,23 @@ export const Header: React.FC<Props> = ({
             <span className="text-xs font-medium">サブフォルダを含む</span>
           </label>
 
+          {scanOptions.includeSubfolders && scanOptions.targetScope !== 'files' && (
+            <label className="flex items-center gap-1.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={scanOptions.includeRootFolder !== false}
+                onChange={(e) =>
+                  setScanOptions((prev) => ({
+                    ...prev,
+                    includeRootFolder: e.target.checked,
+                  }))
+                }
+                className="rounded border-slate-300 text-accent-primary focus:ring-accent-primary h-3.5 w-3.5"
+              />
+              <span className="text-xs font-medium text-slate-500">親フォルダも含める</span>
+            </label>
+          )}
+
           <div className="flex items-center gap-1.5">
             <span className="text-xs text-text-muted">対象:</span>
             <select

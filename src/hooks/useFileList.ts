@@ -1,14 +1,53 @@
 import { useState, useCallback } from 'react';
-import { FileItem, ScanOptions } from '../types';
+import { FileItem, ScanOptions, SortOption, SortField } from '../types';
 import { api } from '../api';
+
+const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
 
 export function useFileList() {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [isScanning, setIsScanning] = useState(false);
   const [scanOptions, setScanOptions] = useState<ScanOptions>({
     includeSubfolders: false,
+    includeRootFolder: true,
     targetScope: 'files',
   });
+  
+  const [sortOption, setSortOption] = useState<SortOption>({
+    field: 'none',
+    order: 'asc',
+  });
+
+  const sortFilesArray = (items: FileItem[], field: SortField, order: 'asc' | 'desc') => {
+    if (field === 'none') return items;
+    
+    return [...items].sort((a, b) => {
+      let result = 0;
+      switch (field) {
+        case 'name':
+          result = collator.compare(a.originalName, b.originalName);
+          break;
+        case 'dir':
+          result = collator.compare(a.originalDir, b.originalDir);
+          break;
+        case 'size':
+          result = a.size - b.size;
+          break;
+        case 'date':
+          result = a.modifiedAt - b.modifiedAt;
+          break;
+      }
+      return order === 'asc' ? result : -result;
+    });
+  };
+
+  const handleSort = useCallback((field: SortField) => {
+    setSortOption((prev) => {
+      const order = prev.field === field && prev.order === 'asc' ? 'desc' : 'asc';
+      setFiles((currentFiles) => sortFilesArray(currentFiles, field, order));
+      return { field, order };
+    });
+  }, []);
 
   const addPaths = useCallback(
     async (paths: string[]) => {
@@ -19,7 +58,13 @@ export function useFileList() {
         setFiles((prev) => {
           const existingPathMap = new Set(prev.map((f) => f.originalPath));
           const newItems = scanned.filter((f) => !existingPathMap.has(f.originalPath));
-          return [...prev, ...newItems];
+          
+          const combined = [...prev, ...newItems];
+          // もしソートが適用されていれば、追加時にもソートを維持
+          if (sortOption.field !== 'none') {
+            return sortFilesArray(combined, sortOption.field, sortOption.order);
+          }
+          return combined;
         });
       } catch (err) {
         console.error('Failed to scan paths:', err);
@@ -27,7 +72,7 @@ export function useFileList() {
         setIsScanning(false);
       }
     },
-    [scanOptions]
+    [scanOptions, sortOption]
   );
 
   const removeFiles = useCallback((ids: string[]) => {
@@ -100,6 +145,8 @@ export function useFileList() {
     isScanning,
     scanOptions,
     setScanOptions,
+    sortOption,
+    handleSort,
     addPaths,
     removeFiles,
     toggleSelect,

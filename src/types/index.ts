@@ -189,5 +189,14 @@ export type WordHistoryMap = Record<string, string[]>;
 
 export interface ScanOptions {
   includeSubfolders: boolean;
+  includeRootFolder: boolean;
   targetScope: 'files' | 'folders' | 'both';
+}
+
+export type SortField = 'name' | 'dir' | 'size' | 'date' | 'none';
+export type SortOrder = 'asc' | 'desc';
+
+export interface SortOption {
+  field: SortField;
+  order: SortOrder;
 }

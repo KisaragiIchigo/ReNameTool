@@ -19,20 +19,25 @@ export async function scanPaths(paths: string[], options: ScanOptions): Promise<
       if (isDir) {
         // フォルダ自体のリネーム対象への追加
         if (options.targetScope === 'folders' || options.targetScope === 'both') {
-          const dirName = path.basename(fullPath);
-          const parentDir = path.dirname(fullPath);
-          result.push({
-            id: `folder-${fullPath}-${Date.now()}-${Math.random()}`,
-            originalPath: fullPath,
-            originalName: dirName,
-            originalExt: '',
-            originalDir: parentDir,
-            size: 0,
-            createdAt: stats.birthtimeMs || stats.ctimeMs,
-            modifiedAt: stats.mtimeMs,
-            isDirectory: true,
-            selected: true,
-          });
+          // ルートディレクトリであり、includeRootFolderがfalseの場合はスキップする
+          const shouldInclude = !(isRootEntry && options.includeRootFolder === false);
+          
+          if (shouldInclude) {
+            const dirName = path.basename(fullPath);
+            const parentDir = path.dirname(fullPath);
+            result.push({
+              id: `folder-${fullPath}-${Date.now()}-${Math.random()}`,
+              originalPath: fullPath,
+              originalName: dirName,
+              originalExt: '',
+              originalDir: parentDir,
+              size: 0,
+              createdAt: stats.birthtimeMs || stats.ctimeMs,
+              modifiedAt: stats.mtimeMs,
+              isDirectory: true,
+              selected: true,
+            });
+          }
         }
 
         // ドロップされたルートフォルダ、または「サブフォルダを含む」がONの場合は中身を走査
